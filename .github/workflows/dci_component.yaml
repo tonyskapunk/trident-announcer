@@ -2,7 +2,7 @@ name: Create DCI components for Trident
 
 on:
   schedule:
-    - cron: "52 16 * * 5" # Fridays at 20:00 UTC
+    - cron: "0 18 * * 5" # Fridays at 20:00 UTC
   workflow_dispatch:
 
 jobs:
@@ -28,17 +28,17 @@ jobs:
         OCP-4.8
         '
         componentName: netapp-trident
-        componentVersion: ${{ dci.trident.outputs.release }}
+        componentVersion: ${{ steps.trident.outputs.release }}
         componentRelease: ga
 
     - name: Send message to Google Chat
       run: >
-        created_at=$(<<<"${{ dci.dci.outputs.components }}" jq '.[0].component.created_at');
+        created_at=$(<<<"${{ steps.dci.outputs.components }}" jq '.[0].component.created_at');
         component_creation=$(date --date "${created_at}" +%s);
         now=$(date +%s);
         if [[ $((now - component_creation)) -gt 300 ]]; then
-            msg_header="📢 Trident ${{ dci.trident.outputs.release }} has been released:\n---\n";
-            msg=$(<<<"${{ dci.dci.outputs.components }}" jq '[ .[].component | {name: .name, id: .id}]');
+            msg_header="📢 Trident ${{ steps.trident.outputs.release }} has been released:\n---\n";
+            msg=$(<<<"${{ steps.dci.outputs.components }}" jq '[ .[].component | {name: .name, id: .id}]');
             curl -sL
             -H "Content-Type: application/json; charset=UTF-8"
             --data "{'text': '${msg_header}\`\`\`${msg}\`\`\`'}"
