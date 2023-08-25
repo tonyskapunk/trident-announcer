@@ -2,11 +2,13 @@ name: Create DCI components for Trident
 
 on:
   schedule:
-    - cron: "40 16 * * 5" # Fridays at 20:00 UTC
+    - cron: "52 16 * * 5" # Fridays at 20:00 UTC
   workflow_dispatch:
 
 jobs:
   dci:
+    runs-on: ubuntu-latest
+    steps:
     - name: Get Latest Release
       id: trident
       uses: pozetroninc/github-action-get-latest-release@v0.7.0
