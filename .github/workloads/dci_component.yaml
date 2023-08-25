@@ -2,7 +2,7 @@ name: Create DCI components for Trident
 
 on:
   schedule:
-    - cron: "35 16 * * 5" # Fridays at 20:00 UTC
+    - cron: "40 16 * * 5" # Fridays at 20:00 UTC
   workflow_dispatch:
 
 jobs:
@@ -36,10 +36,10 @@ jobs:
         now=$(date +%s);
         if [[ $((now - component_creation)) -gt 300 ]]; then
             msg_header="📢 Trident ${{ dci.trident.outputs.release }} has been released:\n---\n";
-            msg=$(<<<"${{ dci.dci.outputs.components }}" jq '[ .[].component | {name: .name, id: .id}]')
+            msg=$(<<<"${{ dci.dci.outputs.components }}" jq '[ .[].component | {name: .name, id: .id}]');
             curl -sL
             -H "Content-Type: application/json; charset=UTF-8"
-            --data "{'text': '${msg_header}\`\`\`${msg}\`\`\`'}" \
+            --data "{'text': '${msg_header}\`\`\`${msg}\`\`\`'}"
             "${{ secrets.GCHAT_WEBHOOK }}"
         fi
 
