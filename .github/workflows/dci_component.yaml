@@ -1,8 +1,7 @@
 name: Create DCI components for Trident
 
 on:
-  schedule:
-    - cron: "30 20 * * 5" # Fridays at 20:00 UTC
+  workflow_dispatch:
 
 jobs:
   dci:
