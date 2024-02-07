@@ -37,14 +37,25 @@ jobs:
         if [[ $((now - component_creation)) -gt 300 ]]; then
           exit 0;
         fi;
-        msg_header="📢 Trident ${{ steps.trident.outputs.release }} has been released:";
+        msg_header="📢 Trident ${{ steps.trident.outputs.release }} has been released:\n---\n";
         msg=$(<<<'${{ steps.dci.outputs.components }}' jq '[ .[].component | {name: .name, id: .id}]');
         if [[ -n "${{ secrets.GCHAT_WEBHOOK }}" ]]; then
           curl -sL \
           -H "Content-Type: application/json; charset=UTF-8" \
-          --data "{'text': '${msg_header}'\n---\n'\`\`\`${msg}\`\`\`'}" \
+          --data "{'text': '${msg_header}\`\`\`${msg}\`\`\`'}" \
           "${{ secrets.GCHAT_WEBHOOK }}";
         fi;
+
+    - name: Send message to Slack
+      run: >
+        created_at=$(<<<'${{ steps.dci.outputs.components }}' jq -r '.[0].component.created_at');
+        component_creation=$(date --date "${created_at}" +%s);
+        now=$(date +%s);
+        if [[ $((now - component_creation)) -gt 300 ]]; then
+          exit 0;
+        fi;
+        msg_header="📢 Trident ${{ steps.trident.outputs.release }} has been released:";
+        msg=$(<<<'${{ steps.dci.outputs.components }}' jq '[ .[].component | {name: .name, id: .id}]');
         if [[ -n "${{ secrets.SLACK_WEBHOOK }}" ]]; then
           data='{"blocks": [{"type": "header","text": {"text": "'"${msg_header}"'","type": "plain_text"}},{"type": "section","text": {"text": "'"${msg}"'", "type": "mrkdwn"}}]}';
           curl -sL \
