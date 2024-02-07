@@ -57,7 +57,7 @@ jobs:
         msg_header="📢 Trident ${{ steps.trident.outputs.release }} has been released:";
         msg=$(<<<'${{ steps.dci.outputs.components }}' jq '[ .[].component | {name: .name, id: .id}]');
         if [[ -n "${{ secrets.SLACK_WEBHOOK }}" ]]; then
-          data='{"blocks": [{"type": "header","text": {"text": "'"${msg_header}"'","type": "plain_text"}},{"type": "section","text": {"text": "'"${msg}"'", "type": "mrkdwn"}}]}';
+          data="{'blocks': [{'type': 'header','text': {'text': '${msg_header}','type': 'plain_text'}},{'type': 'section','text': {'text': '\`\`\`${msg}\`\`\`', 'type': 'mrkdwn'}}]}";
           curl -sL \
           -H "Content-Type: application/json; charset=UTF-8" \
           --data "${data}" \
