@@ -34,7 +34,7 @@ jobs:
         created_at=$(<<<'${{ steps.dci.outputs.components }}' jq -r '.[0].component.created_at');
         component_creation=$(date --date "${created_at}" +%s);
         now=$(date +%s);
-        if [[ $((now - component_creation)) -gt 300 ]]; then
+        if [[ $((now - component_creation)) -lt 300 ]]; then
           exit 0;
         fi;
         msg_header="📢 Trident ${{ steps.trident.outputs.release }} has been released:\n---\n";
@@ -51,7 +51,7 @@ jobs:
         created_at=$(<<<'${{ steps.dci.outputs.components }}' jq -r '.[0].component.created_at');
         component_creation=$(date --date "${created_at}" +%s);
         now=$(date +%s);
-        if [[ $((now - component_creation)) -gt 300 ]]; then
+        if [[ $((now - component_creation)) -lt 300 ]]; then
           exit 0;
         fi;
         msg_header="📢 Trident ${{ steps.trident.outputs.release }} has been released:";
